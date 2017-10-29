@@ -23,6 +23,7 @@ class Issue extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Listing-issues
      */
     public function list(
         array $filters = [],
@@ -47,6 +48,7 @@ class Issue extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Showing-an-issue
      */
     public function get(int $id, array $includes = []): array
     {
@@ -61,6 +63,7 @@ class Issue extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Creating-an-issue
      */
     public function create(array $data): array
     {
@@ -75,6 +78,7 @@ class Issue extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Updating-an-issue
      */
     public function update(int $id, array $data = []): array
     {
@@ -88,6 +92,7 @@ class Issue extends AbstractResource
      *
      * @return int
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Deleting-an-issue
      */
     public function delete(int $id): int
     {
@@ -140,6 +145,7 @@ class Issue extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Adding-a-watcher
      */
     public function addWatcher(int $id, int $userId): array
     {
@@ -155,6 +161,7 @@ class Issue extends AbstractResource
      *
      * @return int
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Removing-a-watcher
      */
     public function removeWatcher(int $id, int $userId): int
     {

@@ -18,6 +18,7 @@ class Project extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Listing-projects
      */
     public function list(
         array $pagination = ['offset' => 0, 'limit' => 25],
@@ -37,6 +38,7 @@ class Project extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Showing-a-project
      */
     public function get($id, array $includes = []): array
     {
@@ -53,6 +55,7 @@ class Project extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Creating-a-project
      */
     public function create(
         string $name,
@@ -73,6 +76,7 @@ class Project extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Updating-a-project
      */
     public function update($id, array $data): array
     {
@@ -86,6 +90,7 @@ class Project extends AbstractResource
      *
      * @return int
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Deleting-a-project
      */
     public function delete($id): int
     {

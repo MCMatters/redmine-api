@@ -11,6 +11,7 @@ use function array_filter;
  * Class Version
  *
  * @package McMatters\RedmineApi\Resources
+ * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions
  */
 class Version extends AbstractResource
 {
@@ -19,6 +20,7 @@ class Version extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions#GET
      */
     public function list($projectId): array
     {
@@ -30,6 +32,7 @@ class Version extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions#GET-2
      */
     public function get(int $id): array
     {
@@ -46,6 +49,7 @@ class Version extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions#POST
      */
     public function create(
         $projectId,
@@ -79,6 +83,7 @@ class Version extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions#PUT
      */
     public function update(
         int $id,
@@ -107,6 +112,7 @@ class Version extends AbstractResource
      *
      * @return int
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions#DELETE
      */
     public function delete(int $id): int
     {

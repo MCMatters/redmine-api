@@ -8,6 +8,7 @@ namespace McMatters\RedmineApi\Resources;
  * Class ProjectMembership
  *
  * @package McMatters\RedmineApi\Resources
+ * @see http://www.redmine.org/projects/redmine/wiki/Rest_Memberships
  */
 class ProjectMembership extends AbstractResource
 {
@@ -17,6 +18,7 @@ class ProjectMembership extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Memberships#GET
      */
     public function list(
         $projectId,
@@ -33,6 +35,7 @@ class ProjectMembership extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Memberships#GET-2
      */
     public function get(int $id): array
     {
@@ -45,6 +48,7 @@ class ProjectMembership extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Memberships#POST
      */
     public function create(int $userId, array $roleIds): array
     {
@@ -60,6 +64,7 @@ class ProjectMembership extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Memberships#PUT
      */
     public function update(int $id, array $roleIds): array
     {
@@ -74,6 +79,7 @@ class ProjectMembership extends AbstractResource
      *
      * @return int
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Memberships#DELETE
      */
     public function delete(int $id): int
     {

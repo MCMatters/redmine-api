@@ -23,6 +23,7 @@ class TimeEntry extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_TimeEntries#Listing-time-entries
      */
     public function list(
         array $filters = [],
@@ -44,6 +45,7 @@ class TimeEntry extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_TimeEntries#Showing-a-time-entry
      */
     public function get(int $id): array
     {
@@ -59,6 +61,7 @@ class TimeEntry extends AbstractResource
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      * @throws InvalidArgumentException
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_TimeEntries#Creating-a-time-entry
      */
     public function create(
         int $id,
@@ -86,6 +89,7 @@ class TimeEntry extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_TimeEntries#Updating-a-time-entry
      */
     public function update(int $id, array $data): array
     {
@@ -99,6 +103,7 @@ class TimeEntry extends AbstractResource
      *
      * @return int
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_TimeEntries#Deleting-a-time-entry
      */
     public function delete(int $id): int
     {

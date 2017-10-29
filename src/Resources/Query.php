@@ -11,6 +11,7 @@ use function array_filter;
  * Class Query
  *
  * @package McMatters\RedmineApi\Resources
+ * @see http://www.redmine.org/projects/redmine/wiki/Rest_Queries
  */
 class Query extends AbstractResource
 {
@@ -20,6 +21,7 @@ class Query extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Queries#GET
      */
     public function list(int $id = null, $projectId = null): array
     {

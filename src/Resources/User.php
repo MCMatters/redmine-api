@@ -21,6 +21,7 @@ class User extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#GET
      */
     public function list(array $filters = []): array
     {
@@ -28,6 +29,37 @@ class User extends AbstractResource
             '/users.json',
             $this->buildQueryParameters($filters)
         );
+    }
+
+    /**
+     * @param int|string $id
+     * @param array $includes
+     *
+     * @return array
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws InvalidArgumentException
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#GET-2
+     */
+    public function get($id, array $includes = []): array
+    {
+        $this->checkId($id);
+
+        return $this->requestGet(
+            "/users/{$id}.json",
+            $this->buildQueryParameters(['include' => $includes])
+        );
+    }
+
+    /**
+     * @param array $includes
+     *
+     * @return array
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws InvalidArgumentException
+     */
+    public function getCurrent(array $includes = []): array
+    {
+        return $this->get('current', $includes);
     }
 
     /**
@@ -40,6 +72,7 @@ class User extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#POST
      */
     public function create(
         string $login,
@@ -65,41 +98,12 @@ class User extends AbstractResource
     }
 
     /**
-     * @param int|string $id
-     * @param array $includes
-     *
-     * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
-     * @throws InvalidArgumentException
-     */
-    public function get($id, array $includes = []): array
-    {
-        $this->checkId($id);
-
-        return $this->requestGet(
-            "/users/{$id}.json",
-            $this->buildQueryParameters(['include' => $includes])
-        );
-    }
-
-    /**
-     * @param array $includes
-     *
-     * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
-     * @throws InvalidArgumentException
-     */
-    public function getCurrent(array $includes = []): array
-    {
-        return $this->get('current', $includes);
-    }
-
-    /**
      * @param int $id
      * @param array $data
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#PUT
      */
     public function update(int $id, array $data): array
     {
@@ -114,6 +118,7 @@ class User extends AbstractResource
      *
      * @return int
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#DELETE
      */
     public function delete(int $id): int
     {

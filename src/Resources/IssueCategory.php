@@ -11,6 +11,7 @@ use function array_filter;
  * Class IssueCategory
  *
  * @package McMatters\RedmineApi\Resources
+ * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories
  */
 class IssueCategory extends AbstractResource
 {
@@ -20,6 +21,7 @@ class IssueCategory extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories#GET
      */
     public function list(
         $projectId,
@@ -36,6 +38,7 @@ class IssueCategory extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories#GET-2
      */
     public function get(int $id): array
     {
@@ -49,6 +52,7 @@ class IssueCategory extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories#POST
      */
     public function create(
         $projectId,
@@ -72,6 +76,7 @@ class IssueCategory extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories#PUT
      */
     public function update(int $id, array $data = []): array
     {
@@ -87,6 +92,7 @@ class IssueCategory extends AbstractResource
      *
      * @return int
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories#DELETE
      */
     public function delete(int $id, int $reassignToId = null): int
     {

@@ -8,12 +8,14 @@ namespace McMatters\RedmineApi\Resources;
  * Class Role
  *
  * @package McMatters\RedmineApi\Resources
+ * @see http://www.redmine.org/projects/redmine/wiki/Rest_Roles
  */
 class Role extends AbstractResource
 {
     /**
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Roles#GET
      */
     public function list(): array
     {
@@ -25,6 +27,7 @@ class Role extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Roles#GET-2
      */
     public function get(int $id): array
     {

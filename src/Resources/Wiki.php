@@ -8,6 +8,7 @@ namespace McMatters\RedmineApi\Resources;
  * Class Wiki
  *
  * @package McMatters\RedmineApi\Resources
+ * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages
  */
 class Wiki extends AbstractResource
 {
@@ -16,6 +17,7 @@ class Wiki extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages#Getting-the-pages-list-of-a-wiki
      */
     public function list($projectId): array
     {
@@ -29,6 +31,7 @@ class Wiki extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages#Getting-a-wiki-page
      */
     public function get($projectId, string $title, array $includes = []): array
     {
@@ -46,6 +49,7 @@ class Wiki extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages#Getting-an-old-version-of-a-wiki-page
      */
     public function getByVersion(
         $projectId,
@@ -66,6 +70,7 @@ class Wiki extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages#Creating-or-updating-a-wiki-page
      */
     public function updateOrCreate(
         $projectId,
@@ -93,6 +98,7 @@ class Wiki extends AbstractResource
      *
      * @return int
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages#Deleting-a-wiki-page
      */
     public function delete($projectId, string $title): int
     {

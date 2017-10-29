@@ -10,6 +10,7 @@ use const null;
  * Class IssueRelation
  *
  * @package McMatters\RedmineApi\Resources
+ * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueRelations
  */
 class IssueRelation extends AbstractResource
 {
@@ -18,6 +19,7 @@ class IssueRelation extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueRelations#GET
      */
     public function list(int $issueId): array
     {
@@ -30,6 +32,7 @@ class IssueRelation extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueRelations#GET-2
      */
     public function get(int $id, array $includes = []): array
     {
@@ -47,6 +50,7 @@ class IssueRelation extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueRelations#POST
      */
     public function create(
         int $issueId,
@@ -71,6 +75,7 @@ class IssueRelation extends AbstractResource
      *
      * @return int
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueRelations#DELETE
      */
     public function delete(int $id): int
     {

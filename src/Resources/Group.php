@@ -8,12 +8,14 @@ namespace McMatters\RedmineApi\Resources;
  * Class Group
  *
  * @package McMatters\RedmineApi\Resources
+ * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups
  */
 class Group extends AbstractResource
 {
     /**
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#GET
      */
     public function list(): array
     {
@@ -26,6 +28,7 @@ class Group extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#GET-2
      */
     public function get(int $id, array $includes = []): array
     {
@@ -41,6 +44,7 @@ class Group extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#POST
      */
     public function create(string $name, array $userIds): array
     {
@@ -56,6 +60,7 @@ class Group extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#PUT
      */
     public function update(int $id, array $data = []): array
     {
@@ -70,6 +75,7 @@ class Group extends AbstractResource
      *
      * @return int
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#DELETE
      */
     public function delete(int $id): int
     {
@@ -82,6 +88,7 @@ class Group extends AbstractResource
      *
      * @return array
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#POST-2
      */
     public function addUser(int $id, int $userId): array
     {
@@ -97,6 +104,7 @@ class Group extends AbstractResource
      *
      * @return int
      * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#DELETE-2
      */
     public function deleteUser(int $id, int $userId): int
     {
