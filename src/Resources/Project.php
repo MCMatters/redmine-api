@@ -17,17 +17,18 @@ class Project extends AbstractResource
      * @param array $includes
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
-    public function list(array $pagination = [], array $includes = []): array
-    {
+    public function list(
+        array $pagination = ['offset' => 0, 'limit' => 25],
+        array $includes = []
+    ): array {
         $query = $this->buildQueryParameters(
             $pagination,
             ['include' => $includes]
         );
 
-        return $this->requestGet('projects.json', $query);
+        return $this->requestGet('/projects.json', $query);
     }
 
     /**
@@ -35,14 +36,14 @@ class Project extends AbstractResource
      * @param array $includes
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function get($id, array $includes = []): array
     {
-        $query = $this->buildQueryParameters(['include' => $includes]);
-
-        return $this->requestGet("projects/{$id}.json", $query);
+        return $this->requestGet(
+            "/projects/{$id}.json",
+            $this->buildQueryParameters(['include' => $includes])
+        );
     }
 
     /**
@@ -51,21 +52,19 @@ class Project extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function create(
         string $name,
         string $identifier,
         array $data = []
     ): array {
-        $data = [
-            'project' => ['name' => $name, 'identifier' => $identifier] + $data,
-        ];
+        $data = $this->sanitizeData(
+            ['name' => $name, 'identifier' => $identifier] + $data,
+            $this->getPermittedFields()
+        );
 
-        $data = $this->sanitizeData($data, $this->getPermittedFields());
-
-        return $this->requestPost('projects.json', $data);
+        return $this->requestPost('/projects.json', ['project' => $data]);
     }
 
     /**
@@ -73,8 +72,7 @@ class Project extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function update($id, array $data): array
     {
@@ -87,7 +85,7 @@ class Project extends AbstractResource
      * @param int|string $id
      *
      * @return int
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function delete($id): int
     {

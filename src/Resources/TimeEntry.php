@@ -22,33 +22,32 @@ class TimeEntry extends AbstractResource
      * @param array $sorting
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function list(
         array $filters = [],
-        array $pagination = [],
+        array $pagination = ['offset' => 0, 'limit' => 25],
         array $sorting = []
     ): array {
-        $query = $this->buildQueryParameters(
-            $filters,
-            $pagination,
-            ['sort' => $sorting]
+        return $this->requestGet(
+            '/time_entries.json',
+            $this->buildQueryParameters(
+                $filters,
+                $pagination,
+                ['sort' => $sorting]
+            )
         );
-
-        return $this->requestGet('time_entries.json', $query);
     }
 
     /**
      * @param int $id
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function get(int $id): array
     {
-        return $this->requestGet("time_entries/{$id}.json");
+        return $this->requestGet("/time_entries/{$id}.json");
     }
 
     /**
@@ -58,8 +57,7 @@ class TimeEntry extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      * @throws InvalidArgumentException
      */
     public function create(
@@ -79,7 +77,7 @@ class TimeEntry extends AbstractResource
                 ] + $data,
         ];
 
-        return $this->requestPost('time_entries.json', $data);
+        return $this->requestPost('/time_entries.json', $data);
     }
 
     /**
@@ -87,21 +85,20 @@ class TimeEntry extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function update(int $id, array $data): array
     {
         $data = $this->sanitizeData($data, $this->getPermittedFields());
 
-        return $this->requestPut("time_entries/{$id}.json", $data);
+        return $this->requestPut("/time_entries/{$id}.json", $data);
     }
 
     /**
      * @param int $id
      *
      * @return int
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function delete(int $id): int
     {

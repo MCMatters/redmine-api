@@ -6,6 +6,7 @@ namespace McMatters\RedmineApi\Exceptions;
 
 use Exception;
 use Throwable;
+use const null;
 
 /**
  * Class RequestException

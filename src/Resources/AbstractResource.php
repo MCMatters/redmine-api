@@ -5,12 +5,13 @@ declare(strict_types = 1);
 namespace McMatters\RedmineApi\Resources;
 
 use GuzzleHttp\Client;
-use McMatters\RedmineApi\Exceptions\RequestException;
-use McMatters\RedmineApi\Exceptions\ResponseException;
+use McMatters\RedmineApi\Exceptions\{
+    RedmineExceptionInterface, RequestException, ResponseException
+};
 use Throwable;
 use const null, true, JSON_ERROR_NONE;
-use function implode, is_array, is_callable, json_decode, json_last_error,
-    json_last_error_msg, trim, urlencode;
+use function array_merge, implode, is_array, is_callable, json_decode,
+    json_last_error, json_last_error_msg, trim, urlencode;
 
 /**
  * Class AbstractResource
@@ -46,8 +47,7 @@ abstract class AbstractResource
      * @param array $query
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     * @throws RedmineExceptionInterface
      */
     protected function requestGet(string $uri, array $query = []): array
     {
@@ -70,8 +70,7 @@ abstract class AbstractResource
      * @param array $body
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     * @throws RedmineExceptionInterface
      */
     protected function requestPost(string $uri, array $body): array
     {
@@ -91,8 +90,7 @@ abstract class AbstractResource
      * @param array $body
      *
      * @return array
-     * @throws RequestException
-     * @throws ResponseException
+     * @throws RedmineExceptionInterface
      */
     protected function requestPut(string $uri, array $body): array
     {
@@ -109,14 +107,15 @@ abstract class AbstractResource
 
     /**
      * @param string $uri
+     * @param array $query
      *
      * @return int
-     * @throws RequestException
+     * @throws RedmineExceptionInterface
      */
-    protected function requestDelete(string $uri): int
+    protected function requestDelete(string $uri, array $query = []): int
     {
         try {
-            $response = $this->httpClient->delete($uri);
+            $response = $this->httpClient->delete($uri, ['query' => $query]);
 
             return $response->getStatusCode();
         } catch (Throwable $e) {
@@ -128,7 +127,7 @@ abstract class AbstractResource
      * @param string $content
      *
      * @return array
-     * @throws ResponseException
+     * @throws RedmineExceptionInterface
      */
     protected function parseJson(string $content): array
     {
@@ -183,7 +182,30 @@ abstract class AbstractResource
             return $data;
         }
 
-        foreach ($permitted as $field) {
+        foreach ($permitted as $key => $field) {
+            $values[] = $this->sanitizeItem($data, $key, $field);
+        }
+
+        return array_merge([], ...$values);
+    }
+
+    /**
+     * @param array $data
+     * @param mixed $key
+     * @param mixed $field
+     *
+     * @return array
+     */
+    protected function sanitizeItem(array $data, $key, $field): array
+    {
+        $values = [];
+
+        if (is_array($field)) {
+            foreach ($field as $name => $item) {
+                $nextKey = is_array($item) ? $name : $item;
+                $values[$key] = $this->sanitizeItem($data[$key], $nextKey, $item);
+            }
+        } else {
             $value = $data[$field] ?? null;
 
             if (null !== $value) {
@@ -197,7 +219,7 @@ abstract class AbstractResource
     /**
      * @param Throwable $e
      *
-     * @throws RequestException
+     * @throws RedmineExceptionInterface
      */
     protected function throwRequestException(Throwable $e)
     {

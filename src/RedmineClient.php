@@ -7,18 +7,17 @@ namespace McMatters\RedmineApi;
 use GuzzleHttp\Client as HttpClient;
 use McMatters\RedmineApi\Exceptions\BadResourceException;
 use McMatters\RedmineApi\Resources\AbstractResource;
-use McMatters\RedmineApi\Resources\Issue;
 use function class_exists, strtolower, ucfirst;
 
 /**
- * Class Client
+ * Class RedmineClient
  *
  * @package McMatters\RedmineApi
  */
-class Client
+class RedmineClient
 {
     /**
-     * @var Issue
+     * @var array
      */
     protected $resources;
 

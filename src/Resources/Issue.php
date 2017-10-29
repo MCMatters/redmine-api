@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace McMatters\RedmineApi\Resources;
 
 use const false, true;
-use function array_merge, array_values;
+use function array_merge, array_values, trim;
 
 /**
  * Class Issue
@@ -16,31 +16,29 @@ use function array_merge, array_values;
 class Issue extends AbstractResource
 {
     /**
-     * Listing issues.
-     *
      * @param array $filters
      * @param array $pagination
      * @param array $sorting
      * @param array $includes
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function list(
         array $filters = [],
-        array $pagination = [],
+        array $pagination = ['offset' => 0, 'limit' => 25],
         array $sorting = [],
         array $includes = []
     ): array {
-        $query = $this->buildQueryParameters(
-            $filters,
-            $pagination,
-            ['sort' => $sorting],
-            ['include' => $includes]
+        return $this->requestGet(
+            '/issues.json',
+            $this->buildQueryParameters(
+                $filters,
+                $pagination,
+                ['sort' => $sorting],
+                ['include' => $includes]
+            )
         );
-
-        return $this->requestGet('issues.json', $query);
     }
 
     /**
@@ -48,28 +46,27 @@ class Issue extends AbstractResource
      * @param array $includes
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function get(int $id, array $includes = []): array
     {
-        $query = $this->buildQueryParameters(['include' => $includes]);
-
-        return $this->requestGet("issues/{$id}.json", $query);
+        return $this->requestGet(
+            "/issues/{$id}.json",
+            $this->buildQueryParameters(['include' => $includes])
+        );
     }
 
     /**
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function create(array $data): array
     {
         $data = $this->sanitizeData($data, $this->getPermittedFields());
 
-        return $this->requestPost('issues.json', ['issue' => $data]);
+        return $this->requestPost('/issues.json', ['issue' => $data]);
     }
 
     /**
@@ -77,35 +74,32 @@ class Issue extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function update(int $id, array $data = []): array
     {
         $data = $this->sanitizeData($data, $this->getPermittedFields(true));
 
-        return $this->requestPut("issues/{$id}.json", ['issue' => $data]);
+        return $this->requestPut("/issues/{$id}.json", ['issue' => $data]);
     }
 
     /**
      * @param int $id
      *
      * @return int
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function delete(int $id): int
     {
-        return $this->requestDelete("issues/{$id}.json");
+        return $this->requestDelete("/issues/{$id}.json");
     }
 
     /**
      * @param int $id
-     *
      * @param bool $skipSystem
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function getNotes(int $id, bool $skipSystem = false): array
     {
@@ -121,8 +115,7 @@ class Issue extends AbstractResource
      * @param string $note
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function addNote(int $id, string $note): array
     {
@@ -134,8 +127,7 @@ class Issue extends AbstractResource
      * @param int $statusId
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function updateStatus(int $id, int $statusId): array
     {
@@ -147,13 +139,12 @@ class Issue extends AbstractResource
      * @param int $userId
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function addWatcher(int $id, int $userId): array
     {
         return $this->requestPost(
-            "issues/{$id}/watchers.json",
+            "/issues/{$id}/watchers.json",
             ['user_id' => $userId]
         );
     }
@@ -163,11 +154,11 @@ class Issue extends AbstractResource
      * @param int $userId
      *
      * @return int
-     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
      */
     public function removeWatcher(int $id, int $userId): int
     {
-        return $this->requestDelete("issue/{$id}/watchers/{$userId}.json");
+        return $this->requestDelete("/issue/{$id}/watchers/{$userId}.json");
     }
 
     /**
