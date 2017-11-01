@@ -205,7 +205,7 @@ class Issue extends AbstractResource
     protected function filterSystemNotes(array $notes): array
     {
         foreach ($notes as $key => $note) {
-            $note['notes'] = trim($note['notes']);
+            $note['notes'] = trim($note['notes'] ?? '');
 
             if ('' === $note['notes']) {
                 unset($notes[$key]);
