@@ -7,7 +7,7 @@ namespace McMatters\RedmineApi;
 use GuzzleHttp\Client as HttpClient;
 use McMatters\RedmineApi\Exceptions\BadResourceException;
 use McMatters\RedmineApi\Resources\AbstractResource;
-use function class_exists, strtolower, ucfirst;
+use function class_exists, strtolower, str_replace, ucwords;
 
 /**
  * Class RedmineClient
@@ -62,7 +62,7 @@ class RedmineClient
             return $this->resources[$lowerCaseName];
         }
 
-        $name = ucfirst($name);
+        $name = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $name)));
 
         $class = __NAMESPACE__."\\Resources\\{$name}";
 
