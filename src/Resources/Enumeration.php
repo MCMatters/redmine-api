@@ -14,31 +14,34 @@ class Enumeration extends AbstractResource
 {
     /**
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Enumerations#GET
      */
     public function issuePriorities(): array
     {
-        return $this->requestGet('/enumerations/issue_priorities.json');
+        return $this->httpClient->get('enumerations/issue_priorities.json');
     }
 
     /**
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Enumerations#GET-2
      */
     public function timeEntryActivities(): array
     {
-        return $this->requestGet('/enumerations/time_entry_activities.json');
+        return $this->httpClient->get('enumerations/time_entry_activities.json');
     }
 
     /**
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Enumerations#GET-3
      */
     public function documentCategories(): array
     {
-        return $this->requestGet('/enumerations/document_categories.json');
+        return $this->httpClient->get('enumerations/document_categories.json');
     }
 }

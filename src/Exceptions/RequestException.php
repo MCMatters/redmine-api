@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace McMatters\RedmineApi\Exceptions;
 
 use Exception;
+use McMatters\RedmineApi\Contracts\RedmineExceptionContract;
 use Throwable;
 use const null;
 
@@ -13,7 +14,7 @@ use const null;
  *
  * @package McMatters\RedmineApi\Exceptions
  */
-class RequestException extends Exception implements RedmineExceptionInterface
+class RequestException extends Exception implements RedmineExceptionContract
 {
     /**
      * RequestException constructor.

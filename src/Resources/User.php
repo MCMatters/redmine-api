@@ -6,7 +6,7 @@ namespace McMatters\RedmineApi\Resources;
 
 use InvalidArgumentException;
 use const false;
-use function is_int;
+use function array_merge, count, is_int;
 
 /**
  * Class User
@@ -20,46 +20,72 @@ class User extends AbstractResource
      * @param array $filters
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#GET
      */
     public function list(array $filters = []): array
     {
-        return $this->requestGet(
-            '/users.json',
-            $this->buildQueryParameters($filters)
-        );
+        return $this->httpClient->get('users.json', [$filters]);
+    }
+
+    /**
+     * @return array
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
+     */
+    public function all(): array
+    {
+        $all = [];
+        $offset = 0;
+        $count = 0;
+
+        do {
+            $list = $this->list(['offset' => $offset, 'limit' => 100]);
+
+            $all[] = $list['users'];
+
+            $count += count($list['users']);
+            $offset += 100;
+        } while ($count < $list['total_count']);
+
+        return array_merge([], ...$all);
     }
 
     /**
      * @param int|string $id
-     * @param array $includes
+     * @param array $include
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#GET-2
      */
-    public function get($id, array $includes = []): array
+    public function get($id, array $include = []): array
     {
         $this->checkId($id);
 
-        return $this->requestGet(
-            "/users/{$id}.json",
-            $this->buildQueryParameters(['include' => $includes])
+        return $this->getDataByKey(
+            $this->httpClient->get(
+                "users/{$id}.json",
+                [['include' => $include]]
+            ),
+            'user'
         );
     }
 
     /**
-     * @param array $includes
+     * @param array $include
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
-    public function getCurrent(array $includes = []): array
+    public function getCurrent(array $include = []): array
     {
-        return $this->get('current', $includes);
+        return $this->get('current', $include);
     }
 
     /**
@@ -71,7 +97,9 @@ class User extends AbstractResource
      * @param bool $sendNotification
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#POST
      */
     public function create(
@@ -82,19 +110,20 @@ class User extends AbstractResource
         array $data = [],
         bool $sendNotification = false
     ): array {
-        $data = $this->sanitizeData($data, $this->getPermittedFields());
-
         $data = [
-            'user'             => [
-                    'login'      => $login,
-                    'first_name' => $firstName,
-                    'last_name'  => $lastName,
-                    'mail'       => $email,
-                ] + $data,
+            'user' => [
+                'login' => $login,
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'mail' => $email,
+            ] + $data,
             'send_information' => $sendNotification,
         ];
 
-        return $this->requestPost('/users.json', $data);
+        return $this->getDataByKey(
+            $this->httpClient->post('users.json', $data),
+            'user'
+        );
     }
 
     /**
@@ -102,56 +131,36 @@ class User extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#PUT
      */
     public function update(int $id, array $data): array
     {
-        return $this->requestPut(
-            "/users/{$id}.json",
-            $this->sanitizeData($data, $this->getPermittedFields())
-        );
+        return $this->httpClient->put("users/{$id}.json", $data);
     }
 
     /**
      * @param int $id
      *
-     * @return int
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @return bool
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#DELETE
      */
-    public function delete(int $id): int
+    public function delete(int $id): bool
     {
-        return $this->requestDelete("/users/{$id}.json");
-    }
-
-    /**
-     * @return array
-     */
-    protected function getPermittedFields(): array
-    {
-        return [
-            'login',
-            'password',
-            'firstname',
-            'lastname',
-            'mail',
-            'auth_source_id',
-            'mail_notification',
-            'must_change_passwd',
-            'generate_password',
-        ];
+        return $this->httpClient->delete("users/{$id}.json");
     }
 
     /**
      * @param int|string $id
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     protected function checkId($id)
     {
-        if (!is_int($id) && $id !== 'current') {
-            throw new InvalidArgumentException('The $id must be integer or "current"');
+        if ('current' !== $id && !is_int($id)) {
+            throw new InvalidArgumentException('The id must be integer or "current"');
         }
     }
 }

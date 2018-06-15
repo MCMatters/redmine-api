@@ -20,16 +20,17 @@ class IssueCategory extends AbstractResource
      * @param array $pagination
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories#GET
      */
     public function list(
         $projectId,
         array $pagination = ['offset' => 0, 'limit' => 25]
     ): array {
-        return $this->requestGet(
-            "/projects/{$projectId}/issue_categories.json",
-            $this->buildQueryParameters($pagination)
+        return $this->httpClient->get(
+            "projects/{$projectId}/issue_categories.json",
+            [$pagination]
         );
     }
 
@@ -37,12 +38,17 @@ class IssueCategory extends AbstractResource
      * @param int $id
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories#GET-2
      */
     public function get(int $id): array
     {
-        return $this->requestGet("/issue_categories/{$id}.json");
+        return $this->getDataByKey(
+            $this->httpClient->get("issue_categories/{$id}.json"),
+            'issue_category'
+        );
     }
 
     /**
@@ -51,7 +57,9 @@ class IssueCategory extends AbstractResource
      * @param int|null $assignedToId
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories#POST
      */
     public function create(
@@ -59,14 +67,17 @@ class IssueCategory extends AbstractResource
         string $name,
         int $assignedToId = null
     ): array {
-        return $this->requestPost(
-            "/projects/{$projectId}/issue_categories.json",
-            [
-                'issue_category' => array_filter([
-                    'name'           => $name,
-                    'assigned_to_id' => $assignedToId,
-                ]),
-            ]
+        return $this->getDataByKey(
+            $this->httpClient->post(
+                "projects/{$projectId}/issue_categories.json",
+                [
+                    'issue_category' => array_filter([
+                        'name' => $name,
+                        'assigned_to_id' => $assignedToId,
+                    ]),
+                ]
+            ),
+            'issue_category'
         );
     }
 
@@ -75,29 +86,27 @@ class IssueCategory extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories#PUT
      */
-    public function update(int $id, array $data = []): array
+    public function update(int $id, array $data): array
     {
-        return $this->requestPut(
-            "/issue_categories/{$id}.json",
-            $this->sanitizeData($data, ['name', 'assigned_to_id'])
-        );
+        return $this->httpClient->put("issue_categories/{$id}.json", $data);
     }
 
     /**
      * @param int $id
      * @param int|null $reassignToId
      *
-     * @return int
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @return bool
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories#DELETE
      */
-    public function delete(int $id, int $reassignToId = null): int
+    public function delete(int $id, int $reassignToId = null): bool
     {
-        return $this->requestDelete(
-            "/issue_categories/{$id}.json",
+        return $this->httpClient->delete(
+            "issue_categories/{$id}.json",
             array_filter(['reassign_to_id' => $reassignToId])
         );
     }

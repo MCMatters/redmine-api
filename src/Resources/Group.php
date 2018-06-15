@@ -14,27 +14,33 @@ class Group extends AbstractResource
 {
     /**
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#GET
      */
     public function list(): array
     {
-        return $this->requestGet('/groups.json');
+        return $this->httpClient->get('groups.json');
     }
 
     /**
      * @param int $id
-     * @param array $includes
+     * @param array $include
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#GET-2
      */
-    public function get(int $id, array $includes = []): array
+    public function get(int $id, array $include = []): array
     {
-        return $this->requestGet(
-            "/groups/{$id}.json",
-            $this->buildQueryParameters(['include' => $includes])
+        return $this->getDataByKey(
+            $this->httpClient->get(
+                "groups/{$id}.json",
+                [['include' => $include]]
+            ),
+            'group'
         );
     }
 
@@ -43,14 +49,19 @@ class Group extends AbstractResource
      * @param array $userIds
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#POST
      */
     public function create(string $name, array $userIds): array
     {
-        return $this->requestPost(
-            '/groups.json',
-            ['group' => ['name' => $name, 'user_ids' => $userIds]]
+        return $this->getDataByKey(
+            $this->httpClient->post(
+                'groups.json',
+                ['group' => ['name' => $name, 'user_ids' => $userIds]]
+            ),
+            'group'
         );
     }
 
@@ -59,27 +70,25 @@ class Group extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#PUT
      */
-    public function update(int $id, array $data = []): array
+    public function update(int $id, array $data): array
     {
-        return $this->requestPut(
-            "/groups/{$id}.json",
-            $this->sanitizeData($data, ['name', 'user_ids'])
-        );
+        return $this->httpClient->put("groups/{$id}.json", $data);
     }
 
     /**
      * @param int $id
      *
-     * @return int
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @return bool
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#DELETE
      */
-    public function delete(int $id): int
+    public function delete(int $id): bool
     {
-        return $this->requestDelete("/groups/{$id}.json");
+        return $this->httpClient->delete("groups/{$id}.json");
     }
 
     /**
@@ -87,13 +96,14 @@ class Group extends AbstractResource
      * @param int $userId
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#POST-2
      */
     public function addUser(int $id, int $userId): array
     {
-        return $this->requestPost(
-            "/groups/{$id}/users.json",
+        return $this->httpClient->post(
+            "groups/{$id}/users.json",
             ['user_id' => $userId]
         );
     }
@@ -102,12 +112,12 @@ class Group extends AbstractResource
      * @param int $id
      * @param int $userId
      *
-     * @return int
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @return bool
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#DELETE-2
      */
-    public function deleteUser(int $id, int $userId): int
+    public function deleteUser(int $id, int $userId): bool
     {
-        return $this->requestDelete("/groups/{$id}/users/{$userId}.json");
+        return $this->httpClient->delete("groups/{$id}/users/{$userId}.json");
     }
 }

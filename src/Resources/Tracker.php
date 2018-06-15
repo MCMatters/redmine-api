@@ -14,11 +14,12 @@ class Tracker extends AbstractResource
 {
     /**
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Trackers#GET
      */
     public function list(): array
     {
-        return $this->requestGet('/trackers.json');
+        return $this->httpClient->get('trackers.json');
     }
 }

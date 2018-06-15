@@ -22,7 +22,8 @@ class TimeEntry extends AbstractResource
      * @param array $sorting
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_TimeEntries#Listing-time-entries
      */
     public function list(
@@ -30,13 +31,13 @@ class TimeEntry extends AbstractResource
         array $pagination = ['offset' => 0, 'limit' => 25],
         array $sorting = []
     ): array {
-        return $this->requestGet(
-            '/time_entries.json',
-            $this->buildQueryParameters(
+        return $this->httpClient->get(
+            'time_entries.json',
+            [
                 $filters,
                 $pagination,
-                ['sort' => $sorting]
-            )
+                ['sort' => $sorting],
+            ]
         );
     }
 
@@ -44,12 +45,17 @@ class TimeEntry extends AbstractResource
      * @param int $id
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_TimeEntries#Showing-a-time-entry
      */
     public function get(int $id): array
     {
-        return $this->requestGet("/time_entries/{$id}.json");
+        return $this->getDataByKey(
+            $this->httpClient->get("time_entries/{$id}.json"),
+            'time_entry'
+        );
     }
 
     /**
@@ -59,8 +65,9 @@ class TimeEntry extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_TimeEntries#Creating-a-time-entry
      */
     public function create(
@@ -71,16 +78,12 @@ class TimeEntry extends AbstractResource
     ): array {
         $this->checkReferencingType($type);
 
-        $data = $this->sanitizeData($data, $this->getPermittedFields());
+        $data = ['time_entry' => ["{$type}_id" => $id, 'hours' => $hours] + $data];
 
-        $data = [
-            'time_entry' => [
-                    "{$type}_id" => $id,
-                    'hours'      => $hours,
-                ] + $data,
-        ];
-
-        return $this->requestPost('/time_entries.json', $data);
+        return $this->getDataByKey(
+            $this->httpClient->post('time_entries.json', $data),
+            'time_entry'
+        );
     }
 
     /**
@@ -88,52 +91,36 @@ class TimeEntry extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_TimeEntries#Updating-a-time-entry
      */
     public function update(int $id, array $data): array
     {
-        $data = $this->sanitizeData($data, $this->getPermittedFields());
-
-        return $this->requestPut("/time_entries/{$id}.json", $data);
+        return $this->httpClient->put("time_entries/{$id}.json", $data);
     }
 
     /**
      * @param int $id
      *
-     * @return int
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @return bool
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_TimeEntries#Deleting-a-time-entry
      */
-    public function delete(int $id): int
+    public function delete(int $id): bool
     {
-        return $this->requestDelete("time_entries/{$id}.json");
-    }
-
-    /**
-     * @return array
-     */
-    protected function getPermittedFields(): array
-    {
-        return [
-            'issue_id',
-            'project_id',
-            'spent_on',
-            'hours',
-            'activity_id',
-            'comments',
-        ];
+        return $this->httpClient->delete("time_entries/{$id}.json");
     }
 
     /**
      * @param string $type
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     protected function checkReferencingType(string $type)
     {
         if (!in_array($type, ['issue', 'project'], true)) {
-            throw new InvalidArgumentException('The $type must be as issue or project');
+            throw new InvalidArgumentException('The type must be as issue or project');
         }
     }
 }

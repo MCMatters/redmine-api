@@ -19,24 +19,30 @@ class Version extends AbstractResource
      * @param int|string $projectId
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions#GET
      */
     public function list($projectId): array
     {
-        return $this->requestGet("/projects/{$projectId}/versions.json");
+        return $this->httpClient->get("projects/{$projectId}/versions.json");
     }
 
     /**
      * @param int $id
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions#GET-2
      */
     public function get(int $id): array
     {
-        return $this->requestGet("/versions/{$id}.json");
+        return $this->getDataByKey(
+            $this->httpClient->get("versions/{$id}.json"),
+            'version'
+        );
     }
 
     /**
@@ -44,11 +50,13 @@ class Version extends AbstractResource
      * @param string $name
      * @param string $status
      * @param string $sharing
-     * @param null $dueDate
+     * @param string|null $dueDate
      * @param string|null $description
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions#POST
      */
     public function create(
@@ -56,20 +64,25 @@ class Version extends AbstractResource
         string $name,
         string $status = 'open',
         string $sharing = 'none',
-        $dueDate = null,
+        string $dueDate = null,
         string $description = null
     ): array {
-        return $this->requestPut(
-            "/projects/{$projectId}/versions.json",
-            [
-                'version' => array_filter([
-                    'name'        => $name,
-                    'status'      => $status,
-                    'sharing'     => $sharing,
-                    'due_date'    => (string) $dueDate,
-                    'description' => $description,
-                ]),
-            ]
+        $data = [
+            'version' => array_filter([
+                'name' => $name,
+                'status' => $status,
+                'sharing' => $sharing,
+                'due_date' => $dueDate,
+                'description' => $description,
+            ]),
+        ];
+
+        return $this->getDataByKey(
+            $this->httpClient->post(
+                "projects/{$projectId}/versions.json",
+                $data
+            ),
+            'version'
         );
     }
 
@@ -78,11 +91,12 @@ class Version extends AbstractResource
      * @param string $name
      * @param string $status
      * @param string $sharing
-     * @param null $dueDate
+     * @param string|null $dueDate
      * @param string|null $description
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions#PUT
      */
     public function update(
@@ -90,17 +104,17 @@ class Version extends AbstractResource
         string $name,
         string $status = 'open',
         string $sharing = 'none',
-        $dueDate = null,
+        string $dueDate = null,
         string $description = null
     ): array {
-        return $this->requestPut(
-            "/versions/{$id}.json",
+        return $this->httpClient->put(
+            "versions/{$id}.json",
             [
                 'version' => array_filter([
-                    'name'        => $name,
-                    'status'      => $status,
-                    'sharing'     => $sharing,
-                    'due_date'    => (string) $dueDate,
+                    'name' => $name,
+                    'status' => $status,
+                    'sharing' => $sharing,
+                    'due_date' => $dueDate,
                     'description' => $description,
                 ]),
             ]
@@ -110,12 +124,12 @@ class Version extends AbstractResource
     /**
      * @param int $id
      *
-     * @return int
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @return bool
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions#DELETE
      */
-    public function delete(int $id): int
+    public function delete(int $id): bool
     {
-        return $this->requestDelete("/versions/{$id}.json");
+        return $this->httpClient->delete("versions/{$id}.json");
     }
 }

@@ -20,14 +20,15 @@ class Query extends AbstractResource
      * @param int|string|null $projectId
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Queries#GET
      */
     public function list(int $id = null, $projectId = null): array
     {
-        return $this->requestGet(
-            '/queries.json',
-            array_filter(['query_id' => $id, 'project_id' => $projectId])
+        return $this->httpClient->get(
+            'queries.json',
+            [array_filter(['query_id' => $id, 'project_id' => $projectId])]
         );
     }
 }

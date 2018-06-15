@@ -18,27 +18,33 @@ class IssueRelation extends AbstractResource
      * @param int $issueId
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueRelations#GET
      */
     public function list(int $issueId): array
     {
-        return $this->requestGet("/issues/{$issueId}/relations.json");
+        return $this->httpClient->get("issues/{$issueId}/relations.json");
     }
 
     /**
      * @param int $id
-     * @param array $includes
+     * @param array $include
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueRelations#GET-2
      */
-    public function get(int $id, array $includes = []): array
+    public function get(int $id, array $include = []): array
     {
-        return $this->requestGet(
-            "/relations/{$id}.json",
-            $this->buildQueryParameters(['include' => $includes])
+        return $this->getDataByKey(
+            $this->httpClient->get(
+                "relations/{$id}.json",
+                [['include' => $include]]
+            ),
+            'relation'
         );
     }
 
@@ -46,39 +52,44 @@ class IssueRelation extends AbstractResource
      * @param int $issueId
      * @param int $issueToId
      * @param string $type
-     * @param null $delay
+     * @param int|null $delay
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueRelations#POST
      */
     public function create(
         int $issueId,
         int $issueToId,
         string $type = 'relates',
-        $delay = null
+        int $delay = null
     ): array {
-        return $this->requestPost(
-            "/issues/{$issueId}/relations.json",
-            [
-                'relation' => [
-                    'issue_to_id'   => $issueToId,
-                    'relation_type' => $type,
-                    'delay'         => $delay,
-                ],
-            ]
+        return $this->getDataByKey(
+            $this->httpClient->post(
+                "issues/{$issueId}/relations.json",
+                [
+                    'relation' => [
+                        'issue_to_id' => $issueToId,
+                        'relation_type' => $type,
+                        'delay' => $delay,
+                    ],
+                ]
+            ),
+            'relation'
         );
     }
 
     /**
      * @param int $id
      *
-     * @return int
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @return bool
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueRelations#DELETE
      */
-    public function delete(int $id): int
+    public function delete(int $id): bool
     {
-        return $this->requestDelete("/relations/{$id}.json");
+        return $this->httpClient->delete("relations/{$id}.json");
     }
 }

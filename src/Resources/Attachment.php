@@ -16,11 +16,16 @@ class Attachment extends AbstractResource
      * @param int $id
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Attachments#GET
      */
     public function get(int $id): array
     {
-        return $this->requestGet("/attachments/{$id}.json");
+        return $this->getDataByKey(
+            $this->httpClient->get("attachments/{$id}.json"),
+            'attachment'
+        );
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace McMatters\RedmineApi\Resources;
 
+use InvalidArgumentException;
+
 /**
  * Class Wiki
  *
@@ -16,28 +18,34 @@ class Wiki extends AbstractResource
      * @param int|string $projectId
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages#Getting-the-pages-list-of-a-wiki
      */
     public function list($projectId): array
     {
-        return $this->requestGet("/projects/{$projectId}/wiki/index.json");
+        return $this->httpClient->get("projects/{$projectId}/wiki/index.json");
     }
 
     /**
      * @param int|string $projectId
      * @param string $title
-     * @param array $includes
+     * @param array $include
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages#Getting-a-wiki-page
      */
-    public function get($projectId, string $title, array $includes = []): array
+    public function get($projectId, string $title, array $include = []): array
     {
-        return $this->requestGet(
-            "/projects/{$projectId}/wiki/{$title}.json",
-            $this->buildQueryParameters(['include' => $includes])
+        return $this->getDataByKey(
+            $this->httpClient->get(
+                "projects/{$projectId}/wiki/{$title}.json",
+                [['include' => $include]]
+            ),
+            'wiki_page'
         );
     }
 
@@ -45,21 +53,26 @@ class Wiki extends AbstractResource
      * @param int|string $projectId
      * @param string $title
      * @param int $version
-     * @param array $includes
+     * @param array $include
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages#Getting-an-old-version-of-a-wiki-page
      */
     public function getByVersion(
         $projectId,
         string $title,
         int $version,
-        array $includes = []
+        array $include = []
     ): array {
-        return $this->requestGet(
-            "/projects/{$projectId}/wiki/{$title}/{$version}.json",
-            $this->buildQueryParameters(['include' => $includes])
+        return $this->getDataByKey(
+            $this->httpClient->get(
+                "projects/{$projectId}/wiki/{$title}/{$version}.json",
+                [['include' => $include]]
+            ),
+            'wiki_page'
         );
     }
 
@@ -69,7 +82,8 @@ class Wiki extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages#Creating-or-updating-a-wiki-page
      */
     public function updateOrCreate(
@@ -77,31 +91,28 @@ class Wiki extends AbstractResource
         string $title,
         array $data = []
     ): array {
-        return $this->requestPut(
-            "/projects/{$projectId}/wiki/{$title}.json",
-            $this->sanitizeData(
-                $data,
-                [
-                    'text',
-                    'version',
-                    'comments',
-                    'parent' => ['title'],
-                    'upload',
-                ]
-            )
+        $response = $this->httpClient->put(
+            "projects/{$projectId}/wiki/{$title}.json",
+            ['wiki_page' => $data]
         );
+
+        try {
+            return $this->getDataByKey($response, 'wiki_page');
+        } catch (InvalidArgumentException $e) {
+            return $response;
+        }
     }
 
     /**
      * @param int|string $projectId
      * @param string $title
      *
-     * @return int
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @return bool
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages#Deleting-a-wiki-page
      */
-    public function delete($projectId, string $title): int
+    public function delete($projectId, string $title): bool
     {
-        return $this->requestDelete("/projects/{$projectId}/wiki/{$title}.json");
+        return $this->httpClient->delete("projects/{$projectId}/wiki/{$title}.json");
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace McMatters\RedmineApi\Resources;
 
+use function array_merge, count;
+
 /**
  * Class Project
  *
@@ -14,37 +16,69 @@ class Project extends AbstractResource
 {
     /**
      * @param array $pagination
-     * @param array $includes
+     * @param array $include
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Listing-projects
      */
     public function list(
         array $pagination = ['offset' => 0, 'limit' => 25],
-        array $includes = []
+        array $include = []
     ): array {
-        $query = $this->buildQueryParameters(
-            $pagination,
-            ['include' => $includes]
+        return $this->httpClient->get(
+            'projects.json',
+            [
+                $pagination,
+                ['include' => $include],
+            ]
         );
+    }
 
-        return $this->requestGet('/projects.json', $query);
+    /**
+     * @param array $include
+     *
+     * @return array
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
+     */
+    public function all(array $include = []): array
+    {
+        $all = [];
+        $offset = 0;
+        $count = 0;
+
+        do {
+            $list = $this->list(['offset' => $offset, 'limit' => 100], $include);
+
+            $all[] = $list['projects'];
+
+            $count += count($list['projects']);
+            $offset += 100;
+        } while ($count < $list['total_count']);
+
+        return array_merge([], ...$all);
     }
 
     /**
      * @param int|string $id
-     * @param array $includes
+     * @param array $include
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Showing-a-project
      */
-    public function get($id, array $includes = []): array
+    public function get($id, array $include = []): array
     {
-        return $this->requestGet(
-            "/projects/{$id}.json",
-            $this->buildQueryParameters(['include' => $includes])
+        return $this->getDataByKey(
+            $this->httpClient->get(
+                "projects/{$id}.json",
+                [['include' => $include]]
+            ),
+            'project'
         );
     }
 
@@ -54,7 +88,9 @@ class Project extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \InvalidArgumentException
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Creating-a-project
      */
     public function create(
@@ -62,12 +98,12 @@ class Project extends AbstractResource
         string $identifier,
         array $data = []
     ): array {
-        $data = $this->sanitizeData(
-            ['name' => $name, 'identifier' => $identifier] + $data,
-            $this->getPermittedFields()
-        );
+        $data = ['name' => $name, 'identifier' => $identifier] + $data;
 
-        return $this->requestPost('/projects.json', ['project' => $data]);
+        return $this->getDataByKey(
+            $this->httpClient->post('projects.json', ['project' => $data]),
+            'project'
+        );
     }
 
     /**
@@ -75,43 +111,24 @@ class Project extends AbstractResource
      * @param array $data
      *
      * @return array
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Updating-a-project
      */
     public function update($id, array $data): array
     {
-        $data = $this->sanitizeData($data, $this->getPermittedFields());
-
-        return $this->requestPut("projects/{$id}.json", $data);
+        return $this->httpClient->put("projects/{$id}.json", $data);
     }
 
     /**
      * @param int|string $id
      *
-     * @return int
-     * @throws \McMatters\RedmineApi\Exceptions\RedmineExceptionInterface
+     * @return bool
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Deleting-a-project
      */
-    public function delete($id): int
+    public function delete($id): bool
     {
-        return $this->requestDelete("projects/{$id}.json");
-    }
-
-    /**
-     * @return array
-     */
-    protected function getPermittedFields(): array
-    {
-        return [
-            'name',
-            'identifier',
-            'description',
-            'homepage',
-            'is_public',
-            'parent_id',
-            'inherit_members',
-            'tracker_ids',
-            'enabled_module_names',
-        ];
+        return $this->httpClient->delete("projects/{$id}.json");
     }
 }
