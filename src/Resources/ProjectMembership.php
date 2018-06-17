@@ -4,6 +4,9 @@ declare(strict_types = 1);
 
 namespace McMatters\RedmineApi\Resources;
 
+use const false, true;
+use function array_merge, count;
+
 /**
  * Class ProjectMembership
  *
@@ -29,6 +32,31 @@ class ProjectMembership extends AbstractResource
             "projects/{$projectId}/memberships.json",
             [$pagination]
         );
+    }
+
+    /**
+     * @param int|string $projectId
+     *
+     * @return array
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
+     */
+    public function all($projectId): array
+    {
+        $all = [];
+        $offset = 0;
+        $count = 0;
+
+        do {
+            $list = $this->list($projectId, ['offset' => $offset, 'limit' => 100]);
+
+            $all[] = $list['memberships'];
+
+            $count += count($list['memberships']);
+            $offset += 100;
+        } while ($count < $list['total_count']);
+
+        return array_merge([], ...$all);
     }
 
     /**
@@ -96,5 +124,31 @@ class ProjectMembership extends AbstractResource
     public function delete(int $id): bool
     {
         return $this->httpClient->delete("memberships/{$id}.json");
+    }
+
+    /**
+     * @param int|string $projectId
+     * @param int $userId
+     * @param int $roleId
+     *
+     * @return bool
+     * @throws \McMatters\RedmineApi\Exceptions\RequestException
+     * @throws \McMatters\RedmineApi\Exceptions\ResponseException
+     */
+    public function hasMembership($projectId, int $userId, int $roleId): bool
+    {
+        foreach ($this->all($projectId) as $membership) {
+            if ($userId === $membership['user']['id']) {
+                foreach ($membership['roles'] as $role) {
+                    if ($roleId === $role['id']) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        return false;
     }
 }
