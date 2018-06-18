@@ -135,7 +135,7 @@ class ProjectMembership extends AbstractResource
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
-    public function hasMembership($projectId, int $userId, int $roleId): bool
+    public function hasMembershipRole($projectId, int $userId, int $roleId): bool
     {
         foreach ($this->all($projectId) as $membership) {
             if ($userId === $membership['user']['id']) {
