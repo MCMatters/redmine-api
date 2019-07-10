@@ -194,9 +194,11 @@ class Client implements HttpClientContract
         foreach ($args as $parameters) {
             foreach ((array) $parameters as $name => $parameter) {
                 if (is_array($parameter)) {
-                    $queryParts[$name] = implode(',', array_map('urlencode', $parameter));
+                    $prepared[$name] = implode(',', array_map(static function ($parameter) {
+                        return urlencode((string) $parameter);
+                    }, $parameter));
                 } else {
-                    $queryParts[$name] = urlencode($parameter);
+                    $prepared[$name] = urlencode((string) $parameter);
                 }
             }
         }
