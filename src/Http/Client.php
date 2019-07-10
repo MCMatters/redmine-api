@@ -11,7 +11,7 @@ use McMatters\RedmineApi\Exceptions\ResponseException;
 use Throwable;
 use const true;
 use const JSON_ERROR_NONE;
-use function array_merge, json_decode, json_last_error, json_last_error_msg,
+use function array_map, array_merge, json_decode, json_last_error, json_last_error_msg,
     implode, is_array, rtrim, trim, urlencode;
 
 /**
@@ -193,11 +193,11 @@ class Client implements HttpClientContract
 
         foreach ($args as $parameters) {
             foreach ((array) $parameters as $name => $parameter) {
-                $prepared[$name] = urlencode(
-                    is_array($parameter)
-                        ? implode(',', $parameter)
-                        : (string) $parameter
-                );
+                if (is_array($parameter)) {
+                    $queryParts[$name] = implode(',', array_map('urlencode', $parameter));
+                } else {
+                    $queryParts[$name] = urlencode($parameter);
+                }
             }
         }
 
