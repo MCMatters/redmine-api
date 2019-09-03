@@ -17,20 +17,19 @@ class ProjectMembership extends AbstractResource
 {
     /**
      * @param int|string $projectId
-     * @param array $pagination
+     * @param array $query
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Memberships#GET
      */
-    public function list(
-        $projectId,
-        array $pagination = ['offset' => 0, 'limit' => 25]
-    ): array {
+    public function list($projectId, array $query = []): array
+    {
         return $this->httpClient->get(
             "projects/{$projectId}/memberships.json",
-            [$pagination]
+            $query
         );
     }
 
@@ -38,6 +37,7 @@ class ProjectMembership extends AbstractResource
      * @param int|string $projectId
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
@@ -63,6 +63,7 @@ class ProjectMembership extends AbstractResource
      * @param int $id
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -81,6 +82,7 @@ class ProjectMembership extends AbstractResource
      * @param array $roleIds
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -102,6 +104,7 @@ class ProjectMembership extends AbstractResource
      * @param array $roleIds
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Memberships#PUT
@@ -118,6 +121,7 @@ class ProjectMembership extends AbstractResource
      * @param int $id
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Memberships#DELETE
      */
@@ -132,6 +136,7 @@ class ProjectMembership extends AbstractResource
      * @param int $roleId
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */

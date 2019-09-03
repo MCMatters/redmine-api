@@ -18,6 +18,7 @@ class IssueRelation extends AbstractResource
      * @param int $issueId
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueRelations#GET
@@ -29,21 +30,19 @@ class IssueRelation extends AbstractResource
 
     /**
      * @param int $id
-     * @param array $include
+     * @param array $query
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueRelations#GET-2
      */
-    public function get(int $id, array $include = []): array
+    public function get(int $id, array $query = []): array
     {
         return $this->getDataByKey(
-            $this->httpClient->get(
-                "relations/{$id}.json",
-                [['include' => $include]]
-            ),
+            $this->httpClient->get("relations/{$id}.json", $query),
             'relation'
         );
     }
@@ -55,6 +54,7 @@ class IssueRelation extends AbstractResource
      * @param int|null $delay
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -85,6 +85,7 @@ class IssueRelation extends AbstractResource
      * @param int $id
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueRelations#DELETE
      */

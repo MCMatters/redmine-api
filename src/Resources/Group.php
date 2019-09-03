@@ -14,6 +14,7 @@ class Group extends AbstractResource
 {
     /**
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#GET
@@ -28,6 +29,7 @@ class Group extends AbstractResource
      * @param array $include
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -38,7 +40,7 @@ class Group extends AbstractResource
         return $this->getDataByKey(
             $this->httpClient->get(
                 "groups/{$id}.json",
-                [['include' => $include]]
+                ['include' => $include]
             ),
             'group'
         );
@@ -49,6 +51,7 @@ class Group extends AbstractResource
      * @param array $userIds
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -70,6 +73,7 @@ class Group extends AbstractResource
      * @param array $data
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#PUT
@@ -83,6 +87,7 @@ class Group extends AbstractResource
      * @param int $id
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#DELETE
      */
@@ -96,6 +101,7 @@ class Group extends AbstractResource
      * @param int $userId
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#POST-2

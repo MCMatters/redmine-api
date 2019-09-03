@@ -16,6 +16,7 @@ interface HttpClientContract
      * @param array $query
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
@@ -26,6 +27,7 @@ interface HttpClientContract
      * @param array $body
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
@@ -36,6 +38,7 @@ interface HttpClientContract
      * @param array $body
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
@@ -46,6 +49,7 @@ interface HttpClientContract
      * @param array $query
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
@@ -56,6 +60,7 @@ interface HttpClientContract
      * @param string $uri
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */

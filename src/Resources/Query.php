@@ -4,8 +4,9 @@ declare(strict_types = 1);
 
 namespace McMatters\RedmineApi\Resources;
 
-use const null;
 use function array_filter;
+
+use const null;
 
 /**
  * Class Query
@@ -20,6 +21,7 @@ class Query extends AbstractResource
      * @param int|string|null $projectId
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Queries#GET

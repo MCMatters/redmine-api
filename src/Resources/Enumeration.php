@@ -14,6 +14,7 @@ class Enumeration extends AbstractResource
 {
     /**
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Enumerations#GET
@@ -25,6 +26,7 @@ class Enumeration extends AbstractResource
 
     /**
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Enumerations#GET-2
@@ -36,6 +38,7 @@ class Enumeration extends AbstractResource
 
     /**
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Enumerations#GET-3

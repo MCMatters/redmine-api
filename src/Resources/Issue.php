@@ -16,54 +16,35 @@ use function array_merge, count, trim;
 class Issue extends AbstractResource
 {
     /**
-     * @param array $filters
-     * @param array $pagination
-     * @param array $sorting
-     * @param array $include
+     * @param array $query
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Listing-issues
      */
-    public function list(
-        array $filters = [],
-        array $pagination = ['offset' => 0, 'limit' => 25],
-        array $sorting = [],
-        array $include = []
-    ): array {
-        return $this->httpClient->get(
-            'issues.json',
-            [
-                $filters,
-                $pagination,
-                ['sort' => $sorting],
-                ['include' => $include],
-            ]
-        );
+    public function list(array $query = []): array
+    {
+        return $this->httpClient->get('issues.json', $query);
     }
 
     /**
-     * @param array $filters
-     * @param array $include
+     * @param array $query
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
-    public function all(array $filters = [], array $include = []): array
+    public function all(array $query = []): array
     {
         $all = [];
         $offset = 0;
         $count = 0;
 
         do {
-            $list = $this->list(
-                $filters,
-                ['offset' => $offset, 'limit' => 100],
-                [],
-                $include
-            );
+            $list = $this->list(['offset' => $offset, 'limit' => 100] + $query);
 
             $all[] = $list['issues'];
 
@@ -75,34 +56,33 @@ class Issue extends AbstractResource
     }
 
     /**
-     * @param array $include
+     * @param array $query
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
-    public function allMine(array $include = []): array
+    public function allMine(array $query = []): array
     {
-        return $this->all(['assigned_to_id' => 'me'], $include);
+        return $this->all(['assigned_to_id' => 'me'] + $query);
     }
 
     /**
      * @param int $id
-     * @param array $include
+     * @param array $query
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Showing-an-issue
      */
-    public function get(int $id, array $include = []): array
+    public function get(int $id, array $query = []): array
     {
         return $this->getDataByKey(
-            $this->httpClient->get(
-                "issues/{$id}.json",
-                [['include' => $include]]
-            ),
+            $this->httpClient->get("issues/{$id}.json", $query),
             'issue'
         );
     }
@@ -111,6 +91,7 @@ class Issue extends AbstractResource
      * @param array $data
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -129,6 +110,7 @@ class Issue extends AbstractResource
      * @param array $data
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Updating-an-issue
@@ -142,6 +124,7 @@ class Issue extends AbstractResource
      * @param int $id
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Deleting-an-issue
      */
@@ -155,13 +138,17 @@ class Issue extends AbstractResource
      * @param bool $skipSystem
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
     public function getNotes(int $id, bool $skipSystem = false): array
     {
-        $notes = $this->getDataByKey($this->get($id, ['journals']), 'journals');
+        $notes = $this->getDataByKey(
+            $this->get($id, ['include' => 'journals']),
+            'journals'
+        );
 
         return $skipSystem ? $this->filterSystemNotes($notes) : $notes;
     }
@@ -171,6 +158,7 @@ class Issue extends AbstractResource
      * @param string $note
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
@@ -184,6 +172,7 @@ class Issue extends AbstractResource
      * @param int $statusId
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
@@ -197,6 +186,7 @@ class Issue extends AbstractResource
      * @param int $userId
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Adding-a-watcher
@@ -214,6 +204,7 @@ class Issue extends AbstractResource
      * @param int $userId
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Removing-a-watcher
      */

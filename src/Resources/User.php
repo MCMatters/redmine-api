@@ -5,8 +5,10 @@ declare(strict_types = 1);
 namespace McMatters\RedmineApi\Resources;
 
 use InvalidArgumentException;
-use const false;
+
 use function array_merge, count, is_int;
+
+use const false;
 
 /**
  * Class User
@@ -17,20 +19,22 @@ use function array_merge, count, is_int;
 class User extends AbstractResource
 {
     /**
-     * @param array $filters
+     * @param array $query
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#GET
      */
-    public function list(array $filters = []): array
+    public function list(array $query = []): array
     {
-        return $this->httpClient->get('users.json', [$filters]);
+        return $this->httpClient->get('users.json', $query);
     }
 
     /**
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
@@ -54,38 +58,40 @@ class User extends AbstractResource
 
     /**
      * @param int|string $id
-     * @param array $include
+     * @param array $query
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#GET-2
      */
-    public function get($id, array $include = []): array
+    public function get($id, array $query = []): array
     {
         $this->checkId($id);
 
         return $this->getDataByKey(
             $this->httpClient->get(
                 "users/{$id}.json",
-                [['include' => $include]]
+                $query
             ),
             'user'
         );
     }
 
     /**
-     * @param array $include
+     * @param array $query
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
-    public function getCurrent(array $include = []): array
+    public function getCurrent(array $query = []): array
     {
-        return $this->get('current', $include);
+        return $this->get('current', $query);
     }
 
     /**
@@ -97,6 +103,7 @@ class User extends AbstractResource
      * @param bool $sendNotification
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -131,6 +138,7 @@ class User extends AbstractResource
      * @param array $data
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#PUT
@@ -144,6 +152,7 @@ class User extends AbstractResource
      * @param int $id
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Users#DELETE
      */

@@ -17,20 +17,21 @@ class IssueCategory extends AbstractResource
 {
     /**
      * @param int|string $projectId
-     * @param array $pagination
+     * @param array $query
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories#GET
      */
     public function list(
         $projectId,
-        array $pagination = ['offset' => 0, 'limit' => 25]
+        array $query = []
     ): array {
         return $this->httpClient->get(
             "projects/{$projectId}/issue_categories.json",
-            [$pagination]
+            $query
         );
     }
 
@@ -38,6 +39,7 @@ class IssueCategory extends AbstractResource
      * @param int $id
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -57,6 +59,7 @@ class IssueCategory extends AbstractResource
      * @param int|null $assignedToId
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -86,6 +89,7 @@ class IssueCategory extends AbstractResource
      * @param array $data
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories#PUT
@@ -100,6 +104,7 @@ class IssueCategory extends AbstractResource
      * @param int|null $reassignToId
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_IssueCategories#DELETE
      */

@@ -18,7 +18,7 @@ abstract class AbstractResource implements ResourceContract
     use DataGetter;
 
     /**
-     * @var Client
+     * @var \McMatters\RedmineApi\Http\Client
      */
     protected $httpClient;
 

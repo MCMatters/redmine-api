@@ -5,8 +5,10 @@ declare(strict_types = 1);
 namespace McMatters\RedmineApi\Resources;
 
 use InvalidArgumentException;
-use const true;
+
 use function in_array;
+
+use const true;
 
 /**
  * Class TimeEntry
@@ -17,34 +19,24 @@ use function in_array;
 class TimeEntry extends AbstractResource
 {
     /**
-     * @param array $filters
-     * @param array $pagination
-     * @param array $sorting
+     * @param array $query
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_TimeEntries#Listing-time-entries
      */
-    public function list(
-        array $filters = [],
-        array $pagination = ['offset' => 0, 'limit' => 25],
-        array $sorting = []
-    ): array {
-        return $this->httpClient->get(
-            'time_entries.json',
-            [
-                $filters,
-                $pagination,
-                ['sort' => $sorting],
-            ]
-        );
+    public function list(array $query = []): array
+    {
+        return $this->httpClient->get('time_entries.json', $query);
     }
 
     /**
      * @param int $id
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -65,6 +57,7 @@ class TimeEntry extends AbstractResource
      * @param array $data
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -91,6 +84,7 @@ class TimeEntry extends AbstractResource
      * @param array $data
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_TimeEntries#Updating-a-time-entry
@@ -104,6 +98,7 @@ class TimeEntry extends AbstractResource
      * @param int $id
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_TimeEntries#Deleting-a-time-entry
      */

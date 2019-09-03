@@ -4,8 +4,9 @@ declare(strict_types = 1);
 
 namespace McMatters\RedmineApi\Resources;
 
-use const null;
 use function array_filter;
+
+use const null;
 
 /**
  * Class Version
@@ -19,6 +20,7 @@ class Version extends AbstractResource
      * @param int|string $projectId
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions#GET
@@ -54,6 +56,7 @@ class Version extends AbstractResource
      * @param string|null $description
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -95,6 +98,7 @@ class Version extends AbstractResource
      * @param string|null $description
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions#PUT
@@ -125,6 +129,7 @@ class Version extends AbstractResource
      * @param int $id
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Versions#DELETE
      */

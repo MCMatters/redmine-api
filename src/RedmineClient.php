@@ -10,6 +10,7 @@ use McMatters\RedmineApi\Resources\{
     IssueRelation, IssueStatus, News, Project, ProjectMembership, Query, Role,
     TimeEntry, Tracker, User, Version, Wiki
 };
+
 use function ucfirst;
 
 /**

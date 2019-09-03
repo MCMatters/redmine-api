@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace McMatters\RedmineApi\Resources\Traits;
 
 use InvalidArgumentException;
+
 use function array_key_exists;
 
 /**
@@ -19,7 +20,8 @@ trait DataGetter
      * @param string $key
      *
      * @return mixed
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     protected function getDataByKey(array $data, string $key)
     {

@@ -15,42 +15,35 @@ use function array_merge, count;
 class Project extends AbstractResource
 {
     /**
-     * @param array $pagination
-     * @param array $include
+     * @param array $query
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Listing-projects
      */
-    public function list(
-        array $pagination = ['offset' => 0, 'limit' => 25],
-        array $include = []
-    ): array {
-        return $this->httpClient->get(
-            'projects.json',
-            [
-                $pagination,
-                ['include' => $include],
-            ]
-        );
+    public function list(array $query = []): array
+    {
+        return $this->httpClient->get('projects.json', $query);
     }
 
     /**
-     * @param array $include
+     * @param array $query
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
-    public function all(array $include = []): array
+    public function all(array $query = []): array
     {
         $all = [];
         $offset = 0;
         $count = 0;
 
         do {
-            $list = $this->list(['offset' => $offset, 'limit' => 100], $include);
+            $list = $this->list(['offset' => $offset, 'limit' => 100] + $query);
 
             $all[] = $list['projects'];
 
@@ -63,21 +56,19 @@ class Project extends AbstractResource
 
     /**
      * @param int|string $id
-     * @param array $include
+     * @param array $query
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Showing-a-project
      */
-    public function get($id, array $include = []): array
+    public function get($id, array $query = []): array
     {
         return $this->getDataByKey(
-            $this->httpClient->get(
-                "projects/{$id}.json",
-                [['include' => $include]]
-            ),
+            $this->httpClient->get("projects/{$id}.json", $query),
             'project'
         );
     }
@@ -88,6 +79,7 @@ class Project extends AbstractResource
      * @param array $data
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -111,6 +103,7 @@ class Project extends AbstractResource
      * @param array $data
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Updating-a-project
@@ -124,6 +117,7 @@ class Project extends AbstractResource
      * @param int|string $id
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Projects#Deleting-a-project
      */

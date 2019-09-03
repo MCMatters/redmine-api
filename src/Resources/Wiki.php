@@ -18,6 +18,7 @@ class Wiki extends AbstractResource
      * @param int|string $projectId
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages#Getting-the-pages-list-of-a-wiki
@@ -33,6 +34,7 @@ class Wiki extends AbstractResource
      * @param array $include
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -43,7 +45,7 @@ class Wiki extends AbstractResource
         return $this->getDataByKey(
             $this->httpClient->get(
                 "projects/{$projectId}/wiki/{$title}.json",
-                [['include' => $include]]
+                ['include' => $include]
             ),
             'wiki_page'
         );
@@ -56,6 +58,7 @@ class Wiki extends AbstractResource
      * @param array $include
      *
      * @return array
+     *
      * @throws \InvalidArgumentException
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
@@ -70,7 +73,7 @@ class Wiki extends AbstractResource
         return $this->getDataByKey(
             $this->httpClient->get(
                 "projects/{$projectId}/wiki/{$title}/{$version}.json",
-                [['include' => $include]]
+                ['include' => $include]
             ),
             'wiki_page'
         );
@@ -82,6 +85,7 @@ class Wiki extends AbstractResource
      * @param array $data
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages#Creating-or-updating-a-wiki-page
@@ -108,6 +112,7 @@ class Wiki extends AbstractResource
      * @param string $title
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_WikiPages#Deleting-a-wiki-page
      */

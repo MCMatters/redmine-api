@@ -4,15 +4,15 @@ declare(strict_types = 1);
 
 namespace McMatters\RedmineApi\Http;
 
-use GuzzleHttp\Client as BaseClient;
 use McMatters\RedmineApi\Contracts\HttpClientContract;
 use McMatters\RedmineApi\Exceptions\RequestException;
 use McMatters\RedmineApi\Exceptions\ResponseException;
+use McMatters\Ticl\Client as BaseClient;
 use Throwable;
-use const true;
-use const JSON_ERROR_NONE;
-use function array_map, array_merge, json_decode, json_last_error, json_last_error_msg,
-    implode, is_array, rtrim, trim, urlencode;
+
+use function json_decode, json_last_error, json_last_error_msg, rtrim, trim;
+
+use const true, JSON_ERROR_NONE;
 
 /**
  * Class Client
@@ -22,7 +22,7 @@ use function array_map, array_merge, json_decode, json_last_error, json_last_err
 class Client implements HttpClientContract
 {
     /**
-     * @var BaseClient
+     * @var \McMatters\Ticl\Client
      */
     protected $client;
 
@@ -48,18 +48,16 @@ class Client implements HttpClientContract
      * @param array $query
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
     public function get(string $uri, array $query = []): array
     {
         try {
-            $response = $this->client->get(
-                $uri,
-                ['query' => $this->prepareRequestParameters($query)]
-            );
+            $response = $this->client->get($uri, ['query' => $query]);
 
-            $content = $response->getBody()->getContents();
+            $content = $response->getBody();
         } catch (Throwable $exception) {
             throw new RequestException(
                 $exception->getMessage(),
@@ -76,6 +74,7 @@ class Client implements HttpClientContract
      * @param array $body
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
@@ -84,7 +83,7 @@ class Client implements HttpClientContract
         try {
             $response = $this->client->post($uri, ['json' => $body]);
 
-            $content = $response->getBody()->getContents();
+            $content = $response->getBody();
         } catch (Throwable $exception) {
             throw new RequestException(
                 $exception->getMessage(),
@@ -101,6 +100,7 @@ class Client implements HttpClientContract
      * @param array $body
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
@@ -109,7 +109,7 @@ class Client implements HttpClientContract
         try {
             $response = $this->client->put($uri, ['json' => $body]);
 
-            $content = $response->getBody()->getContents();
+            $content = $response->getBody();
         } catch (Throwable $exception) {
             throw new RequestException(
                 $exception->getMessage(),
@@ -126,15 +126,13 @@ class Client implements HttpClientContract
      * @param array $query
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      */
     public function delete(string $uri, array $query = []): bool
     {
         try {
-            $response = $this->client->delete(
-                $uri,
-                ['query' => $this->prepareRequestParameters($query)]
-            );
+            $response = $this->client->delete($uri, ['query' => $query]);
 
             $statusCode = $response->getStatusCode();
 
@@ -153,6 +151,7 @@ class Client implements HttpClientContract
      * @param string $uri
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
@@ -162,15 +161,12 @@ class Client implements HttpClientContract
             $response = $this->client->post(
                 $uri,
                 [
-                    'json' => $content,
-                    'headers' => array_merge(
-                        $this->client->getConfig('headers'),
-                        ['Content-Type' => 'application/octet-stream']
-                    )
+                    'binary' => $content,
+                    'headers' => ['Content-Type' => 'application/octet-stream'],
                 ]
             );
 
-            $content = $response->getBody()->getContents();
+            $content = $response->getBody();
         } catch (Throwable $exception) {
             throw new RequestException(
                 $exception->getMessage(),
@@ -183,33 +179,10 @@ class Client implements HttpClientContract
     }
 
     /**
-     * @param array $args
-     *
-     * @return array
-     */
-    protected function prepareRequestParameters(array $args = []): array
-    {
-        $prepared = [];
-
-        foreach ($args as $parameters) {
-            foreach ((array) $parameters as $name => $parameter) {
-                if (is_array($parameter)) {
-                    $prepared[$name] = implode(',', array_map(static function ($parameter) {
-                        return urlencode((string) $parameter);
-                    }, $parameter));
-                } else {
-                    $prepared[$name] = urlencode((string) $parameter);
-                }
-            }
-        }
-
-        return $prepared;
-    }
-
-    /**
      * @param string $content
      *
      * @return array
+     *
      * @throws \McMatters\RedmineApi\Exceptions\ResponseException
      */
     protected function parseResponse(string $content): array

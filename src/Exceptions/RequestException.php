@@ -7,6 +7,7 @@ namespace McMatters\RedmineApi\Exceptions;
 use Exception;
 use McMatters\RedmineApi\Contracts\RedmineExceptionContract;
 use Throwable;
+
 use const null;
 
 /**
@@ -21,7 +22,7 @@ class RequestException extends Exception implements RedmineExceptionContract
      *
      * @param string $message
      * @param int $code
-     * @param Throwable|null $previous
+     * @param \Throwable|null $previous
      */
     public function __construct(
         $message = '',
