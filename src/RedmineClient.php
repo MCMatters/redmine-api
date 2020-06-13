@@ -1,17 +1,14 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\RedmineApi;
 
-use McMatters\RedmineApi\Contracts\ResourceContract;
 use McMatters\RedmineApi\Resources\{
     Attachment, CustomField, Enumeration, File, Group, Issue, IssueCategory,
     IssueRelation, IssueStatus, News, Project, ProjectMembership, Query, Role,
     TimeEntry, Tracker, User, Version, Wiki
 };
-
-use function ucfirst;
 
 /**
  * Class RedmineClient
@@ -52,7 +49,7 @@ class RedmineClient
      */
     public function attachment(): Attachment
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Attachment::class);
     }
 
     /**
@@ -60,7 +57,7 @@ class RedmineClient
      */
     public function customField(): CustomField
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(CustomField::class);
     }
 
     /**
@@ -68,7 +65,7 @@ class RedmineClient
      */
     public function enumeration(): Enumeration
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Enumeration::class);
     }
 
     /**
@@ -76,7 +73,7 @@ class RedmineClient
      */
     public function file(): File
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(File::class);
     }
 
     /**
@@ -84,7 +81,7 @@ class RedmineClient
      */
     public function group(): Group
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Group::class);
     }
 
     /**
@@ -92,7 +89,7 @@ class RedmineClient
      */
     public function issue(): Issue
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Issue::class);
     }
 
     /**
@@ -100,7 +97,7 @@ class RedmineClient
      */
     public function issueCategory(): IssueCategory
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(IssueCategory::class);
     }
 
     /**
@@ -108,7 +105,7 @@ class RedmineClient
      */
     public function issueRelation(): IssueRelation
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(IssueRelation::class);
     }
 
     /**
@@ -116,7 +113,7 @@ class RedmineClient
      */
     public function issueStatus(): IssueStatus
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(IssueStatus::class);
     }
 
     /**
@@ -124,7 +121,7 @@ class RedmineClient
      */
     public function news(): News
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(News::class);
     }
 
     /**
@@ -132,7 +129,7 @@ class RedmineClient
      */
     public function project(): Project
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Project::class);
     }
 
     /**
@@ -140,7 +137,7 @@ class RedmineClient
      */
     public function projectMembership(): ProjectMembership
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(ProjectMembership::class);
     }
 
     /**
@@ -148,7 +145,7 @@ class RedmineClient
      */
     public function query(): Query
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Query::class);
     }
 
     /**
@@ -156,7 +153,7 @@ class RedmineClient
      */
     public function role(): Role
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Role::class);
     }
 
     /**
@@ -164,7 +161,7 @@ class RedmineClient
      */
     public function timeEntry(): TimeEntry
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(TimeEntry::class);
     }
 
     /**
@@ -172,7 +169,7 @@ class RedmineClient
      */
     public function tracker(): Tracker
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Tracker::class);
     }
 
     /**
@@ -180,7 +177,7 @@ class RedmineClient
      */
     public function user(): User
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(User::class);
     }
 
     /**
@@ -188,7 +185,7 @@ class RedmineClient
      */
     public function version(): Version
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Version::class);
     }
 
     /**
@@ -196,27 +193,23 @@ class RedmineClient
      */
     public function wiki(): Wiki
     {
-        return $this->resource(__FUNCTION__);
+        return $this->resource(Wiki::class);
     }
 
     /**
-     * @param string $name
+     * @param string $class
      *
-     * @return \McMatters\RedmineApi\Contracts\ResourceContract
+     * @return mixed
      */
-    protected function resource(string $name): ResourceContract
+    protected function resource(string $class)
     {
-        if (!empty($this->resources[$name])) {
-            return $this->resources[$name];
+        if (!isset($this->resources[$class])) {
+            $this->resources[$class] = new $class(
+                $this->baseUrl,
+                $this->apiKey
+            );
         }
 
-        $class = __NAMESPACE__.'\\Resources\\'.ucfirst($name);
-
-        $this->resources[$name] = new $class(
-            $this->baseUrl,
-            $this->apiKey
-        );
-
-        return $this->resources[$name];
+        return $this->resources[$class];
     }
 }

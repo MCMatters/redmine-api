@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\RedmineApi\Resources;
 
@@ -115,7 +115,9 @@ class TimeEntry extends AbstractResource
     protected function checkReferencingType(string $type)
     {
         if (!in_array($type, ['issue', 'project'], true)) {
-            throw new InvalidArgumentException('The type must be as issue or project');
+            throw new InvalidArgumentException(
+                'The type must be as "issue" or "project"'
+            );
         }
     }
 }

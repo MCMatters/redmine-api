@@ -1,11 +1,12 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\RedmineApi\Resources;
 
-use const false, true;
 use function array_merge, count;
+
+use const false, true;
 
 /**
  * Class ProjectMembership
@@ -50,11 +51,12 @@ class ProjectMembership extends AbstractResource
         do {
             $list = $this->list($projectId, ['offset' => $offset, 'limit' => 100]);
 
-            $all[] = $list['memberships'];
+            $data = $this->getDataByKey($list, 'memberships');
+            $all[] = $data;
 
-            $count += count($list['memberships']);
+            $count += count($data);
             $offset += 100;
-        } while ($count < $list['total_count']);
+        } while ($count < $this->getDataByKey($list, 'total_count'));
 
         return array_merge([], ...$all);
     }

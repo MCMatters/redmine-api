@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\RedmineApi\Resources;
 
@@ -119,6 +119,7 @@ class Group extends AbstractResource
      * @param int $userId
      *
      * @return bool
+     *
      * @throws \McMatters\RedmineApi\Exceptions\RequestException
      * @see http://www.redmine.org/projects/redmine/wiki/Rest_Groups#DELETE-2
      */

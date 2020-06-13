@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\RedmineApi\Resources;
 
@@ -45,11 +45,12 @@ class Project extends AbstractResource
         do {
             $list = $this->list(['offset' => $offset, 'limit' => 100] + $query);
 
-            $all[] = $list['projects'];
+            $data = $this->getDataByKey($list, 'projects');
+            $all[] = $data;
 
-            $count += count($list['projects']);
+            $count += count($data);
             $offset += 100;
-        } while ($count < $list['total_count']);
+        } while ($count < $this->getDataByKey($list, 'total_count'));
 
         return array_merge([], ...$all);
     }

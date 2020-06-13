@@ -1,11 +1,12 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace McMatters\RedmineApi\Resources;
 
-use const null;
 use function array_filter;
+
+use const null;
 
 /**
  * Class IssueCategory
